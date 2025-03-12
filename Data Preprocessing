@@ -1,0 +1,26 @@
+import yfinance as yf
+
+# Download JPMorgan Chase stock data
+data = yf.download("JPM", start="2010-01-01", end="2023-12-31")
+data.to_csv("data/jpm_stock.csv")
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
+
+# Load dataset
+data = pd.read_csv("data/jpm_stock.csv", parse_dates=["Date"])
+
+# Handle missing values
+data.fillna(method="ffill", inplace=True)
+
+# Feature engineering: Calculate moving averages
+data["MA_7"] = data["Close"].rolling(window=7).mean()
+data["MA_30"] = data["Close"].rolling(window=30).mean()
+
+# Normalize data
+scaler = MinMaxScaler()
+data[["Open", "High", "Low", "Close", "Volume", "MA_7", "MA_30"]] = scaler.fit_transform(
+    data[["Open", "High", "Low", "Close", "Volume", "MA_7", "MA_30"]]
+)
+
+# Save preprocessed data
+data.to_csv("data/jpm_stock_processed.csv", index=False)
