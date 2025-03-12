@@ -1,0 +1,31 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load preprocessed data
+data = pd.read_csv("data/jpm_stock_processed.csv", parse_dates=["Date"])
+
+# Plot historical stock prices
+plt.figure(figsize=(12, 6))
+plt.plot(data["Date"], data["Close"], label="Close Price")
+plt.title("JPMorgan Chase Stock Price Over Time")
+plt.xlabel("Date")
+plt.ylabel("Close Price")
+plt.legend()
+plt.show()
+
+# Plot trading volume
+plt.figure(figsize=(12, 6))
+plt.plot(data["Date"], data["Volume"], label="Volume", color="orange")
+plt.title("Trading Volume Over Time")
+plt.xlabel("Date")
+plt.ylabel("Volume")
+plt.legend()
+plt.show()
+
+# Correlation heatmap
+corr = data[["Open", "High", "Low", "Close", "Volume", "MA_7", "MA_30"]].corr()
+plt.figure(figsize=(10, 8))
+sns.heatmap(corr, annot=True, cmap="coolwarm")
+plt.title("Correlation Heatmap")
+plt.show()
